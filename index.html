@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hora Local</title>
+    <script>
+        window.onload = function() {
+            // Definir la hora fija (en UTC por ejemplo 12:00 PM)
+            let horaFija = new Date('2024-12-04T12:00:00Z');  // 12:00 UTC
+
+            // Obtener la zona horaria local del usuario
+            let offset = new Date().getTimezoneOffset();  // En minutos
+
+            // Ajustar la hora fija según la zona horaria local
+            horaFija.setMinutes(horaFija.getMinutes() - offset);
+
+            // Formatear la hora local
+            let options = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
+            let horaLocal = horaFija.toLocaleTimeString([], options);
+
+            // Mostrar la hora local en la página
+            document.getElementById("hora").innerText = "La hora local es: " + horaLocal;
+        };
+    </script>
+</head>
+<body>
+    <h1>Hora en tu zona horaria</h1>
+    <p id="hora"></p>
+</body>
+</html>
