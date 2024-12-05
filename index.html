@@ -6,26 +6,39 @@
     <title>Hora Local</title>
     <script>
         window.onload = function() {
-            // Definir la hora fija (en UTC por ejemplo 12:00 PM)
-            let horaFija = new Date('2024-12-04T12:00:00Z');  // 12:00 UTC
-
+            // Hora base de Colombia (UTC -5) (Ejemplo: 12:00 PM en Colombia)
+            let horaColombia = new Date('2024-12-04T12:00:00-05:00'); // 12:00 PM de Colombia (UTC -5)
+            
             // Obtener la zona horaria local del usuario
-            let offset = new Date().getTimezoneOffset();  // En minutos
+            let usuarioZona = new Date();
+            let usuarioOffset = usuarioZona.getTimezoneOffset();  // Offset en minutos, para la zona horaria local
 
-            // Ajustar la hora fija según la zona horaria local
-            horaFija.setMinutes(horaFija.getMinutes() - offset);
+            // Ajustar la hora de Colombia a la zona horaria local del usuario
+            let horaLocal = new Date(horaColombia.getTime() + (usuarioOffset * 60000));
 
             // Formatear la hora local
             let options = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
-            let horaLocal = horaFija.toLocaleTimeString([], options);
-
-            // Mostrar la hora local en la página
-            document.getElementById("hora").innerText = "La hora local es: " + horaLocal;
+            let horaLocalFormateada = horaLocal.toLocaleTimeString([], options);
+            
+            // Obtener el nombre del país del usuario usando la API de geolocalización
+            fetch("https://ipapi.co/json/")
+                .then(response => response.json())
+                .then(data => {
+                    let pais = data.country_name;  // Nombre del país
+                    document.getElementById("pais").innerText = "País: " + pais;
+                    document.getElementById("hora").innerText = "La hora en " + pais + " es: " + horaLocalFormateada;
+                })
+                .catch(error => {
+                    document.getElementById("pais").innerText = "No se pudo determinar el país";
+                    document.getElementById("hora").innerText = "Error al obtener la hora.";
+                });
         };
     </script>
 </head>
 <body>
-    <h1>Hora en tu zona horaria</h1>
+    <h1>Hora Local desde Colombia</h1>
+    <p id="pais"></p>
     <p id="hora"></p>
 </body>
 </html>
+
